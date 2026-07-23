@@ -204,7 +204,7 @@ const I18nContext = createContext<I18nContextValue | null>(null);
 export function I18nProvider({ children }: { children: ReactNode }) {
   // Default to English for first-time visitors; the useEffect below hydrates
   // the user's stored choice from localStorage on mount.
-  const [locale, setLocaleState] = useState<Locale>("en");
+  const [locale, setLocaleState] = useState<Locale>("zh");
   const [hydrated, setHydrated] = useState(false);
 
   // Read from localStorage on mount (avoids SSR/hydration mismatch)
@@ -221,7 +221,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   // Sync <html lang> attribute
   useEffect(() => {
     if (typeof document !== "undefined") {
-      document.documentElement.lang = locale === "en" ? "en" : "zh-CN";
+      document.documentElement.lang = locale === "zh" ? "zh-CN" : "en";
     }
   }, [locale]);
 
@@ -261,10 +261,10 @@ export function useT(): I18nContextValue {
     // Fallback for components outside provider (shouldn't happen in practice).
     // Mirrors the default locale in I18nProvider.
     return {
-      locale: "en",
+      locale: "zh",
       setLocale: () => {},
       t: (key, params) => {
-        let str = EN[key] ?? ZH[key] ?? key;
+        let str = ZH[key] ?? EN[key] ?? key;
         if (params) for (const [k, v] of Object.entries(params)) str = str.split(`{${k}}`).join(String(v));
         return str;
       },
