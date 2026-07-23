@@ -202,19 +202,19 @@ interface I18nContextValue {
 const I18nContext = createContext<I18nContextValue | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  // Default to English for first-time visitors; the useEffect below hydrates
-  // the user's stored choice from localStorage on mount.
-  const [locale, setLocaleState] = useState<Locale>("zh");
-  const [hydrated, setHydrated] = useState(false);
-
-  // Read from localStorage on mount (avoids SSR/hydration mismatch)
-  useEffect(() => {
+  // 修复1：useState使用惰性初始化函数，客户端挂载直接读取localStorage，不再硬编码zh
+  const [locale, setLocaleState] = useState<Locale>(() => {
+    if (typeof window === "undefined") return "zh";
     try {
       const stored = localStorage.getItem(STORAGE_KEY) as Locale | null;
-      if (stored === "zh" || stored === "en") {
-        setLocaleState(stored);
-      }
-    } catch {}
+      return stored === "zh" || stored === "en" ? stored : "zh";
+    } catch {
+      return "zh";
+    }
+  });
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
     setHydrated(true);
   }, []);
 
@@ -245,12 +245,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(() => ({ locale, setLocale, t }), [locale, setLocale, t]);
 
-  // Avoid rendering with wrong locale before hydration completes
   return (
     <I18nContext.Provider value={value}>
-      <span style={{ display: "contents" }} suppressHydrationWarning>
-        {hydrated ? children : children}
-      </span>
+      {/* 修复2：仅hydrated后渲染页面内容，避免初始中文闪屏 */}
+      {hydrated ? children : null}
     </I18nContext.Provider>
   );
 }
@@ -258,8 +256,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 export function useT(): I18nContextValue {
   const ctx = useContext(I18nContext);
   if (!ctx) {
-    // Fallback for components outside provider (shouldn't happen in practice).
-    // Mirrors the default locale in I18nProvider.
+    // Fallback for components outside provider
     return {
       locale: "zh",
       setLocale: () => {},
