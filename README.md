@@ -4,7 +4,7 @@
 
 **Framework:** LangGraph · **Category:** Chat · **Language:** TypeScript
 
-[![部署到 EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/makers/new?template=after-sales-assistant&from=within&fromAgent=1&agentLang=typescript)
+
 
 ## 概述
 
@@ -27,27 +27,12 @@
 
 本模板遵循 OpenAI 兼容标准 —— 可指向 Makers Models 或任何兼容提供商。
 
-### 如何获取 AI_GATEWAY_API_KEY
-
-1. 打开 Makers 控制台（https://edgeone.ai/makers/new?s_url=https://console.tencentcloud.com/edgeone/makers）
-2. 登录并启用 Makers
-3. 进入 Makers → Models → API Key，创建 Key
-4. 将其填入 `AI_GATEWAY_API_KEY`
-
-> 内置模型在额度内免费，适合验证；生产环境请绑定自费厂商 Key（BYOK）。
 
 ## 本地开发
 
 **前置依赖**
 - Node.js 18+
-- EdgeOne CLI（`npm i -g edgeone`）
 
-```bash
-npm install
-cp .env.example .env
-# 编辑 .env，填入 AI_GATEWAY_API_KEY 与 AI_GATEWAY_BASE_URL
-edgeone makers dev
-```
 
 本地可观测面板地址：http://localhost:8088/agent-metrics。
 
@@ -77,7 +62,7 @@ after-sales-assistant/
 ├── cloud-functions/
 │   └── health/             # GET /health
 ├── app/                    # Next.js App Router 前端
-└── edgeone.json            # EdgeOne 部署配置
+└── edgeone.json            # 部署
 ```
 
 以 `_` 为前缀的文件是私有模块，不会作为公共路由暴露。
@@ -110,15 +95,4 @@ after-sales-assistant/
 - `/health` —— 存活探针（位于 `cloud-functions/`，不涉及 AI）。
 - `conversation_id` 由前端生成，通过 `makers-conversation-id` Header 传入；运行时会自动绑定到 `context.conversation_id`。
 
-### 超时配置
-未自定义 Agent 超时，使用平台默认值。
 
-## 相关资源
-
-- [Makers Agents 文档](https://cloud.tencent.com/document/product/1552/132759)
-- [Makers 快速开始](https://cloud.tencent.com/document/product/1552/132786)
-- [Makers Models](https://cloud.tencent.com/document/product/1552/132748)
-
-## 许可证
-
-MIT
