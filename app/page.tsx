@@ -59,7 +59,7 @@ export default function Home() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-         
+         <DeployButtons templateSlug="after-sales-assistant" githubUrl="https://github.com/yezhiting1/leafai-after-sales-assistant" lang={locale} />
           <button
             onClick={() => setLocale(locale === "en" ? "zh" : "en")}
             className="text-[11px] px-2.5 py-1 rounded-md border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition-colors"
